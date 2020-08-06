@@ -1,0 +1,4 @@
+# Ignore OSX cruft
+.DS_Store
+
+
