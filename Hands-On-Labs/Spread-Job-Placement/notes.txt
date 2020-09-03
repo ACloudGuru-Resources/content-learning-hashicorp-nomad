@@ -1,0 +1,11 @@
+# 
+# This folder is used with the "Using Spread Job Placement for a Nomad job in a CLuster"
+# Hands on lab.
+
+The file called spread-test-initial.nomad is the initial starting file.
+
+A copy of the end resulting file, ie after the Lab has been completed is the
+
+spread-test-final.nomad
+
+
