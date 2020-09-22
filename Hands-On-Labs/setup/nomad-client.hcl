@@ -1,4 +1,4 @@
-i# Full configuration options can be found at https://www.nomadproject.io/docs/configuration
+# Full configuration options can be found at https://www.nomadproject.io/docs/configuration
 
 data_dir = "/opt/nomad/data"
 
