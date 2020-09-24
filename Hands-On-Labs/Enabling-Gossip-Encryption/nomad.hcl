@@ -9,6 +9,7 @@ datacenter = "dc1"
 server {
   enabled = true
   bootstrap_expect = 3
+  retry_join = [ "10.0.0.100", "10.0.0.101", "10.0.0.102" ]
 }
 
 
