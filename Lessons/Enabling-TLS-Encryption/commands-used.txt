@@ -1,0 +1,141 @@
+# Here is a list of commands used in this lesson.
+
+# as the cloud_user.
+
+wget https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssl_1.4.1_linux_amd64 -O cfssl
+
+wget https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssljson_1.4.1_linux_amd64 -O cfssljson
+
+chmod +x cfssl
+chmod +x cfssljson
+
+sudo mv cfssl /usr/local/bin
+sudo mv cfssljson /usr/local/bin
+
+cfssl version
+cfssljson -version
+
+mkdir nomad-certs
+cd nomad-certs
+
+# Note.  I created the cfssl.json file next copy of this file is in this folder.
+
+# Generate the CA's private key and certificate.
+
+cfssl print-defaults csr | cfssl gencert -initca - | cfssljson -bare nomad-ca
+
+# generated server certs.
+
+echo '{}' | cfssl gencert -ca=nomad-ca.pem -ca-key=nomad-ca-key.pem -config=cfssl.json -hostname="server.global.nomad,mylabserver.com,localhost,127.0.0.1" - | cfssljson -bare server
+
+# generated client certs
+
+echo '{}' | cfssl gencert -ca=nomad-ca.pem -ca-key=nomad-ca-key.pem -config=cfssl.json -hostname="client.global.nomad,mylabserver.com,localhost,127.0.0.1" - | cfssljson -bare client
+
+# CLI certs
+
+echo '{}' | cfssl gencert -ca=nomad-ca.pem -ca-key=nomad-ca-key.pem -profile=client - | cfssljson -bare cli
+
+sudo cp nomad-ca.pem server.pem server-key.pem /etc/nomad.d/
+
+# edited the /etc/nomad.d/server.hcl and added the following.
+
+tls {
+  http = true
+  rpc  = true
+
+  ca_file   = "/etc/nomad.d/nomad-ca.pem"
+  cert_file = "/etc/nomad.d/server.pem"
+  key_file  = "/etc/nomad.d/server-key.pem"
+
+ # verify_server_hostname = true
+  verify_https_client    = true
+  rpc_upgrade_mode = true
+
+}
+
+# copied the following server keys to all the server nodes.
+
+nomad-ca.pem server.pem server-key.pem
+
+# Then added the tls stanza on all the server nodes server.hcl files.
+
+# copied the following client keys to the /etc/nomad.d/ folder on all the client nodes.
+
+nomad-ca.pem client.pem client-key.pem
+
+# then added the same tls stanza on the client nodes.
+
+# Then restarted the Nomad on all the nodes. 
+
+sudo systemctl restart nomad
+
+# Then we tested the CLI via a nomad server members command.  We then saw we needed to use the certificates.
+
+# This command worked
+nomad node status -ca-cert=nomad-ca.pem -client-cert=cli.pem -client-key=cli-key.pem -address=https://127.0.0.1:4646
+
+# Then we added the variables to our environment startup.
+
+export NOMAD_ADDR=https://localhost:4646  
+export NOMAD_CACERT=~/nomad-certs/nomad-ca.pem
+export NOMAD_CLIENT_CERT=~/nomad-certs/cli.pem
+export NOMAD_CLIENT_KEY=~/nomad-certs/cli-key.pem
+
+source ~/.bash_profile
+
+# At this point the previous nomad command works again.
+
+## NEXT LESSON - Part 3
+
+# inside the nomad-certs folder.
+
+openssl pkcs12 -inkey cli-key.pem -in cli.pem -export -out cli.pfx
+
+# this created the cli.pfx file to be imported to our browser.
+
+# copied this file to my Linux Desktop where my browser is being used. 
+
+# used a tunnel to connect to my nomad server with a redirect fir port 4646.
+
+ssh cloud_user@MY-NOMAD-SERVER-IP -L4646:localhost:4646
+
+# Then imported cert into my firefox browser.  AM now able to access the Nomad GUI via 
+
+https://localhost:4646
+
+
+# Lesson ends.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

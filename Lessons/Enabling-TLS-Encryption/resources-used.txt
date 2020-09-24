@@ -1,0 +1,11 @@
+# These urls were used in these lessons.
+
+CFSSL Open source tool
+https://api.github.com/repos/cloudflare/cfssl/releases/latest
+
+Sample URL to download CFSSL version 1.4.1 for Linux
+https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssl_1.4.1_linux_amd64
+
+Sample URL to download CFSSLJSON version 1.4.1 for Linux
+https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssljson_1.4.1_linux_amd64
+
