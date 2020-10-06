@@ -6,10 +6,9 @@ data_dir = "/opt/nomad/data"
 
 datacenter = "dc1"
 
-server {
-  enabled = true
-  bootstrap_expect = 2
-  retry_join = [ "10.0.0.100", "10.0.0.101"]
+client {
+  enabled = true 
+  servers = ["10.0.0.100"]
 }
 
 
