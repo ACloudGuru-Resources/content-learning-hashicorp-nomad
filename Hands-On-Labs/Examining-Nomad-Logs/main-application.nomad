@@ -1,4 +1,4 @@
-ijob "main-application" {
+job "main-application" {
   datacenters = ["dc1"]
 
   group "cache" {
